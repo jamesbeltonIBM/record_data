@@ -1,0 +1,48 @@
+This is a step-by-step guide to running through a COS / SQL Query example on IBM Cloud and is presented "as-is".
+For further training materials for IBM Cloud check out ibm.com/training/cloud, as well as the IBM Cloud website at cloud.ibm.com. Note this uses services on Lite / Free tiers.
+
+Steps as follows: 
+1.	Log into your  Cloud account at cloud.ibm.com.
+2.	Through the catalog, create a SQL Query Instance. Call it "<<initials>>_record_data”. Note the name *must* be unique as it will be used within a URL.
+3.	Also through the catalog, create a free tier Object Storage instance. Note you can only have one free tier Object Storage instance at a time. If you already have one, skip this step.  
+4.	Create a new Smart-tier bucket called “<<initials>>_record_data” – note bucket name must be unique.
+5.	Download the two zip files at https://github.com/jamesbeltonIBM/record_data to your local machine.
+6.	Uncompress the files.
+7.	Upload both files to the Object Storage bucket one at a time. You should be able to drag and drop them from one window to another. 
+8.	When uploaded, click the “SQL” icon within Object Storage just above the file names. This will open up a ‘side panel’ showing the Object Storage URL and the instance name of the SQL Query service just created. NOTE: the following SQL queries will include the name of a bucket 'cos://eu-gb/jrb-record-data/' - change this to match the name of yours!
+9.	Click to open SQL Query. A screen will open, and a default query will be shown ( SELECT * FROM cos://eu-gb/jrb_record-data/ LIMIT 50) – alter this to  SELECT * FROM cos://eu-gb/jrb-record-data/record_data_1.txt LIMIT 50. This shows 50 rows of  output from the file.
+10.	Remove / experiment with the “Limit 50” command (increase / decrease the number). The limit command can be useful as if you are working with a large data set it limits the number of rows returned, and therefore the time it takes for the query to execute.
+11.	Change the query to add in “order by artist” either as the last line or before the LIMIT line (SELECT * FROM cos://eu-gb/jrb-record-data/record_data_1.txt order by artist LIMIT 10) 
+12.	Note this generates an error. This is because the fields have not yet been drawn from the file. 
+13.	Change the query thus: SELECT * FROM cos://eu-gb/jrb-record-data/record_data_1.txt stored as CSV fields terminated by "|" order by artist LIMIT 10
+14.	This statement now works, thanks to the new line. This tells SQL Query that the delimiter is the ‘|’ character and the first line becomes the field names
+15.	The ‘order by’ clause in the query tells SQL Query which column to order the results by, for easier reading.
+16.	Next try this statement: “SELECT * FROM cos://eu-gb/jrb-record-data/record_data_1.txt stored as CSV fields terminated by "|" where artist = ‘The Stone Roses’
+17.	In this query, you are setting a condition in the “where” statement, so in other words, only return data where the artist field is equal to “The Stone Roses”. Try modifying this to return data for your favorite band.  
+18.	If you want to look for data for different bands in the same query, you can use the ‘IN’ clause as follows:
+19.	SELECT * FROM cos://eu-gb/jrb-record-data/record_data1.txt stored as CSV fields terminated by "|" where artist IN  (‘The Stone Roses’, ‘Sham69’) order by artist
+20.	Try searching for records by four different bands. 
+21.	Try altering the query to find records for the Title “All Day and All of The Night”
+22.	The model answer for this is SELECT artist, title FROM cos://eu-gb/jrb-record-data/record_data_1.txt stored as CSV fields terminated by "|"
+ where UPPER(title) = UPPER("All Day and All of the Night")
+order by artist
+23.	Note the UPPER function for ‘title’ and ‘All Day and All of the Night’. This has been used because there’s no guarantee that the title of the song has been entered using a particular case format. Using UPPER forces all characters into UPPER CASE letters. Remember when using SQL and comparing results with an ‘=’, only exact matches are found. Try re-running the query without the UPPER function and see what happens.
+24.	You can also search for data across files. To do this, each file will need a value in it that relates them. These are typically called ‘keys’. In each of the two files that have been uploaded, there’s a field called “TRACK_ID” and these are the key fields that can be used to join the data. 
+25.	Try the query: “SELECT t2.YEAR, t1.ARTIST, t1.TITLE
+FROM cos://eu-gb/jrb-record-data/record_data_1.txt stored as CSV fields terminated by "|" t1,
+cos://eu-gb/jrb-record-data/record_data_2.txt stored as CSV fields terminated by "|" t2
+ where t1.ARTIST="The Stranglers"
+and t1.TRACK_ID = t2.TRACK_ID
+
+26.	Here, we are joining the two datafiles that we uploaded and giving them aliases for the query – this is so we don’t have to type out their names in full each time. So, record_data_1 gets the alias t1 and record_data_2 gets the alias t2. 
+27.	T1 contains the key field – track_id, the artist_name and the title of the recording. T2 contains the same track_id key field and the year the recording was released. In the query above, we are using the track_id to find matches between each file.  This allows us to see the year in which the track was released. 
+28.	Each query you execute generates some interesting data. Click the Details tab and let’s take a look at this.
+29.	Firstly, the result of the query is stored in a new location in your Object Storage schema. You can see the unique URL for the result set on the screen. You can click this link and then go and download the result set from Object Storage. 
+30.	You can also query the result set. For example, if you wanted to find all the tracks that were released before 1990 in the last query, click “query the result” and you’ll see a new query in the SQL pane. You can see that this is a “select *” (which selects everything) statement with no “where” clause.
+31.	Modify this to add a 
+“where year < 1981” clause
+and the query then returns a subset of the data retrieved in the previous query. 
+
+
+And that's it :) 
+
