@@ -70,5 +70,5 @@ This shows 50 rows of  output from the file.
 and the query then returns a subset of the data retrieved in the previous query. 
 
 
-And that's it :) 
+And that's it - why not try and experement some more and write your own queries - see https://cloud.ibm.com/docs/sql-query?topic=sql-query-sql-reference for more details. 
 
