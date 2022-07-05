@@ -1,5 +1,5 @@
 # record_data
-This is data that can be used for SQL Query exercises with IBM Cloud.
+This is data that can be used for SQL Query / Code Engine exercises with IBM Cloud.
 
 The data was sourced from 
 
