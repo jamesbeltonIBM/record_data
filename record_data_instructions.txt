@@ -56,6 +56,7 @@ This shows 50 rows of  output from the file.
    cos://eu-gb/jrb-record-data/record_data_2.txt stored as CSV fields terminated by "|" t2
    where t1.ARTIST="The Stranglers"
    and t1.TRACK_ID = t2.TRACK_ID
+   order by t2.year
 
 26.	Here, we are joining the two datafiles that we uploaded and giving them aliases for the query – this is so we don’t have to type out their names in full each time. So, record_data_1 gets the alias t1 and record_data_2 gets the alias t2. 
 27.	T1 contains the key field – track_id, the artist_name and the title of the recording. T2 contains the same track_id key field and the year the recording was released. In the query above, we are using the track_id to find matches between each file.  This allows us to see the year in which the track was released. 
